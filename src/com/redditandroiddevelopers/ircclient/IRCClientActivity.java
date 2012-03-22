@@ -1,4 +1,4 @@
-package com.rad.ircclient;
+package com.redditandroiddevelopers.ircclient;
 
 import android.app.Activity;
 import android.os.Bundle;
