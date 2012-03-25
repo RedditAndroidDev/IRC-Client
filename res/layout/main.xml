@@ -1,54 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/tabhost"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:background="@drawable/radlogo"
-	    android:orientation="vertical" xmlns:android1="http://schemas.android.com/apk/res/android">
-	
-	    <!-- Tabs -->
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-		<TabWidget
-		    android:id="@android:id/tabs"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello" />
 
-		<FrameLayout
-		    android:id="@android:id/tabcontent"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		     />
-		
-	    <!-- Chat Text -->
-	    <TextView
-	        android:id="@+id/chattext"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_above="@+id/userinput_layout"
-	        android:layout_below="@android:id/tabs"
-	        android:scrollbars="vertical"
-	        android:text="@string/hello" />
-	    
-		<!-- Layout for sending chat -->
-	    <RelativeLayout
-	        android:id="@+id/userinput_layout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentBottom="true" >
-	
-	        <EditText
-	            android:id="@+id/userinput"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:ems="10"
-	            android:inputType="textAutoCorrect"
-	            android:singleLine="true" >
-	
-	            <requestFocus />
-	        </EditText>
-	    </RelativeLayout>
-	</RelativeLayout>
-</TabHost>
+</LinearLayout>
