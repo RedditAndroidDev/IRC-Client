@@ -38,15 +38,26 @@ import android.widget.Toast;
 public class IRCClientActivity extends ListActivity implements OnItemClickListener {
     /** Called when the activity is first created. */
 	TextView chatText;
+	MainListAdapter mainListAdapter;
 	static String[] serverList = new String[]{
 		"DalNet","FreeNode","EfNet","DalNet","FreeNode","EfNet","DalNet","FreeNode","EfNet","DalNet","FreeNode","EfNet","DalNet","FreeNode","EfNet"
 	};
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
 		setContentView(R.layout.main);
+		// create custom list adapter: MainListAdapter just to handle rows
+		mainListAdapter = new MainListAdapter(this, serverList);
+		setListAdapter(mainListAdapter);
+		
+		/*
 		setListAdapter(new ArrayAdapter<String>(this,R.layout.single_chat_list_item,serverList));
+		ListView serverListView = getListView();
+		setListAdapter(mainListAdapter);
+		*/
+		
 		ListView serverListView = getListView();
 		serverListView.setTextFilterEnabled(true);
 		serverListView.setOnItemClickListener(this);
