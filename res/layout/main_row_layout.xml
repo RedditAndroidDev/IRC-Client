@@ -37,7 +37,7 @@
 
 			<LinearLayout
 			    android:id="@+id/status_line"
-			    android:layout_width="2dp"
+			    android:layout_width="5dp"
 			    android:layout_height="45dip"
 			    android:background="#DCDCDC"
 			    android:orientation="horizontal" android:layout_marginLeft="2dp">
