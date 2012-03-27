@@ -1,0 +1,10 @@
+Setting up in Eclipse
+---------------------
+
+1. Import the actionbarsherlock folder as an existing project.
+
+2. Import the IRC Client project itself.
+
+3. Make sure that the ActionBarSherlock project is added as a library to the IRC Client project.
+
+4. You're done!
