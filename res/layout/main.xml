@@ -12,7 +12,9 @@
         android1:layout_height="wrap_content"
         android1:layout_centerHorizontal="true"
         android1:contentDescription="RAD Logo"
-        android1:src="@drawable/logo2" android1:layout_below="@layout/main_actionbar"/>
+        android1:src="@drawable/logo2" />
+        <!-- commented out becaused it caused an error
+         android1:layout_below="@layout/main_actionbar"/> -->
 
 	<!-- List of servers -->
       <ListView
