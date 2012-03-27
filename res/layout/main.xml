@@ -3,8 +3,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" xmlns:android1="http://schemas.android.com/apk/res/android"
     >
+   
     <!--  RAD Logo -->
-
     <ImageView
         android1:id="@+id/radCornerLogo"
         android:padding="10dp" 
@@ -12,7 +12,7 @@
         android1:layout_height="wrap_content"
         android1:layout_centerHorizontal="true"
         android1:contentDescription="RAD Logo"
-        android1:src="@drawable/logo2" />
+        android1:src="@drawable/logo2" android1:layout_below="@layout/main_actionbar"/>
 
 	<!-- List of servers -->
       <ListView

@@ -2,12 +2,11 @@ package com.redditandroiddevelopers.ircclient;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainListAdapter extends ArrayAdapter<String> {
@@ -32,6 +31,7 @@ public class MainListAdapter extends ArrayAdapter<String> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		/* this will handle specific rows */
 		View rowView = convertView;
+		
 		if (rowView == null) {
 			LayoutInflater inflater = context.getLayoutInflater();
 			rowView = inflater.inflate(R.layout.main_row_layout, null);  // created custom layout in order to manipulate 
@@ -40,22 +40,34 @@ public class MainListAdapter extends ArrayAdapter<String> {
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.text = (TextView) rowView.findViewById(R.id.tv_ServerName);
 			
+			LinearLayout status_line = (LinearLayout) rowView.findViewById(R.id.status_line);
+
 			rowView.setTag(viewHolder);
+			
+			ViewHolder holder = (ViewHolder) rowView.getTag();
+			String serverNames = names[position];
+			holder.text.setText(serverNames);
+			
+			
+			int colorPosition = position % bgColors.length; //get a number according to row position, determine if number is odd/even
+			//rowView.setBackgroundColor(bgColors[colorPosition]); //make a multi- colored list
+			if (serverNames.equals("DalNet")){
+						
+							// Connected Status color
+				status_line.setBackgroundColor(Color.parseColor("#32CD32"));
+				
+			}else if(serverNames.equals("EfNet")){
+				
+							// Disconnected Status color
+				status_line.setBackgroundColor(Color.parseColor("#CD143C"));
+
+			}else {
+							// Default Color
+				status_line.setBackgroundColor(Color.parseColor("#DCDCDC"));
+			}
 		}
 
-		ViewHolder holder = (ViewHolder) rowView.getTag();
-		String s = names[position];
-		holder.text.setText(s);
 		
-		
-		int colorPosition = position % bgColors.length; //get a number according to row position, determine if number is odd/even
-		rowView.setBackgroundColor(bgColors[colorPosition]); 
-		if (s.startsWith("DalNet")){
-			// when a TextView == DalNet, you will get in this statement
-		} else {
-			//TextView != DalNet
-
-		}
 
 		return rowView;
 	}
