@@ -17,8 +17,8 @@
 */
 package com.redditandroiddevelopers.ircclient;
 
-import android.app.Activity;
-import android.app.ListActivity;
+import com.actionbarsherlock.app.SherlockListActivity;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,7 +35,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class IRCClientActivity extends ListActivity implements OnItemClickListener {
+public class IRCClientActivity extends SherlockListActivity implements OnItemClickListener {
     /** Called when the activity is first created. */
 	TextView chatText;
 	MainListAdapter mainListAdapter;
