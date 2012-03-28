@@ -1,10 +1,20 @@
 Setting up in Eclipse
 ---------------------
 
-1. Import the actionbarsherlock folder as an existing project.
+1. Add the IRC Client from Github.
 
-2. Import the IRC Client project itself.
+2. Right click on it and hit "Import Projects..."
 
-3. Make sure that the ActionBarSherlock project is added as a library to the IRC Client project.
+3. Use the "Import existing projects" wizard, click "Next" and "Finish" after that. If you get an error message, check your workspace. Looks like the project is already there. Make a backup and remove it.
 
-4. You're done!
+4. Once you're done you have to add ActionBarSherlock. In the Git Repository view, extend "IRC Client" and "Working Directory" after that.
+
+5. Right click on the folder "actionbarsherlock" and choose "Import Projects..." and follow the same instructions as before.
+
+6. Now you should have both projects in your workspace. Right click on the imported "IRC Client" project in your workspace and select "Properties".
+
+7. In this dialog you have to choose "Java Build Path" from the left and after that "Projects" from the top bar.
+
+8. Click on "Add" and mark the checkmark next to ActionBarSherlock.
+
+9. Now keep clicking on the OK buttons until you return to the main Eclipse view. You should be all set now.
