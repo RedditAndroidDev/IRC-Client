@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+	<!-- Add a server button -->
+    <Button
+        android:id="@+id/bAddAServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/add_server" />
+    
+    <!-- List of servers -->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bAddAServer"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent" />
+
+</RelativeLayout>

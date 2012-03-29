@@ -3,11 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/radlogo" >
-    
+    android:gravity="bottom"
+    android:background="#fff">
+
+        
     <ScrollView android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@drawable/rad_logo" >
     
 	    <TextView android:id="@+id/chat"
 	        android:layout_width="match_parent"
@@ -16,8 +19,10 @@
     </ScrollView>
 
     <EditText android:id="@+id/edit"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true" />
+	    
     
 </LinearLayout>

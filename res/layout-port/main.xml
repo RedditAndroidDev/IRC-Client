@@ -4,26 +4,13 @@
    
     <!--  RAD Logo -->
     <ImageView
-        android:id="@+id/radCornerLogo"
-        android:padding="10dp" 
+        android:id="@+id/radCornerLogo" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:contentDescription="RAD Logo"
+        android:contentDescription="@string/logo"
         android:src="@drawable/logo2" />
 
-	<!-- List of servers -->
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bAddAServer"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/radCornerLogo"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent" >
-
-    </ListView>
 	<!-- Add a server button -->
     <Button
         android:id="@+id/bAddAServer"
@@ -31,6 +18,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Add a server" />
+        android:text="@string/add_server" />
+    
+    <!-- List of servers -->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bAddAServer"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/radCornerLogo"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent" />
 
 </RelativeLayout>

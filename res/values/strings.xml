@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World, IRCClientActivity!</string>
     <string name="app_name">IRC Client</string>
+    <string name="logo">RAD Logo</string>
+    <string name="add_server">Add a server</string>
 
 </resources>

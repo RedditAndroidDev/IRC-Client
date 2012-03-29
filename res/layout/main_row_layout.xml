@@ -17,7 +17,7 @@
     android:gravity="left|top" 
     android:background="#F0F0F0" 
     android:paddingTop="5dp" 
-    android:paddingBottom="5dp">"
+    android:paddingBottom="5dp">
 		<LinearLayout 
 		    xmlns:android="http://schemas.android.com/apk/res/android" 
 		    android:id="@+id/buttonlayout2" 
