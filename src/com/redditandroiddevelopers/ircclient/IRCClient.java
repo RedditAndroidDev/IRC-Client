@@ -1,8 +1,7 @@
 package com.redditandroiddevelopers.ircclient;
 import org.jibble.pircbot.*;
 
-import com.redditandroiddevelopers.ircclient.messages.ChatMessage;
-import com.redditandroiddevelopers.ircclient.messages.NotificationMessage;
+import com.redditandroiddevelopers.ircclient.messages.*;
 
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +40,16 @@ public class IRCClient extends PircBot {
 		Message msg;
 		msg = mHandler.obtainMessage();
 		NotificationMessage notificationMessage = new NotificationMessage("Disconnected from " + this.getServer(), "disconnect");
+		msg.obj = notificationMessage;
+		mHandler.sendMessage(msg);
+	}
+
+	@Override
+	protected void onTopic(String channel, String topic, String setBy,
+			long date, boolean changed) {
+		Message msg;
+		msg = mHandler.obtainMessage();
+		NotificationMessage notificationMessage = new NotificationMessage("Topic is '" + topic + "' <br>Set by  " + setBy + " on " + date, "topic");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}

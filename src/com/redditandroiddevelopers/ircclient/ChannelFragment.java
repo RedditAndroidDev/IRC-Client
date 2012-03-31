@@ -24,8 +24,7 @@ import java.util.Calendar;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
-import com.redditandroiddevelopers.ircclient.messages.ChatMessage;
-import com.redditandroiddevelopers.ircclient.messages.NotificationMessage;
+import com.redditandroiddevelopers.ircclient.messages.*;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,7 +36,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -78,9 +76,11 @@ public class ChannelFragment extends Fragment {
 					} else if (inputText.matches("^/nick .*")) {
 						nick=ircClient.getNick();
 						String [] args = inputText.split(" ");
-						ircClient.changeNick(args[1]);
-						if (nick.equals(ircClient.getNick())) {
-							showError("Nick already in use.");
+						String newNick = args[1];
+						ircClient.changeNick(newNick);
+						boolean changeNickSuccessful = !(nick.equals(newNick)); // TODO: Not functioning properly
+						if (!changeNickSuccessful) {
+							showError(newNick +" already in use.");
 						}
 						nick=ircClient.getNick();
 					} else {
@@ -97,17 +97,27 @@ public class ChannelFragment extends Fragment {
 			}
 		});
 		
-        try {
-			connect("irc.freenode.net");
-		} catch (NickAlreadyInUseException e) {
-			showError("Nick is already in use");
-		} catch (IOException e) {
-			showError("Unknown IOException");
-		} catch (IrcException e) {
-			showError("IRC Exception");
-		}
-        ircClient.joinChannel(channel);
+		showNotification("Connecting to server...", "connect");
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+		        try {
+					connect("irc.freenode.net");
+				} catch (NickAlreadyInUseException e) {
+					showError("Nick is already in use");
+				} catch (IOException e) {
+					showError("Unknown IOException");
+				} catch (IrcException e) {
+					showError("IRC Exception");
+				} catch (Exception e) {
+					showError(e.toString());
+				}
+				ircClient.joinChannel(channel);
+			}
+		}).start();
+
         scrollToBottom();
+        
         return base;
     }
 
@@ -136,7 +146,7 @@ public class ChannelFragment extends Fragment {
     }
     private void sendMessage(CharSequence msg) {
     	Calendar currentDate = Calendar.getInstance();
-    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+    	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
     	ircClient.sendMessage(channel, msg.toString());
 		mChatContents.append(Html.fromHtml("<br>("+ formatter.format(currentDate.getTime()) +") <font color=red><b>"+ircClient.getNick()+"</b></font>: " + msg));
 		scrollToBottom();
@@ -144,7 +154,7 @@ public class ChannelFragment extends Fragment {
     private void getNewMessage(String channel, String sender, String login,
 			String hostname, String message) {
     	Calendar currentDate = Calendar.getInstance();
-    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+    	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
     	mChatContents.append(Html.fromHtml("<br>(" + formatter.format(currentDate.getTime()) + ") <font color=red>" + sender + "</font>: " + message));
 		scrollToBottom();
     }
@@ -156,16 +166,20 @@ public class ChannelFragment extends Fragment {
 	private void showNotification(String notificationMsg, String type) {
 		if(type.equalsIgnoreCase("join"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
-		if(type.equalsIgnoreCase("connect"))
+		else if(type.equalsIgnoreCase("connect"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
-		if(type.equalsIgnoreCase("disconnect"))
+		else if(type.equalsIgnoreCase("topic"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
+		else if(type.equalsIgnoreCase("disconnect"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=red>* " + notificationMsg +"</font></i>"));
-		if(type.equalsIgnoreCase("quit"))
+		else if(type.equalsIgnoreCase("quit"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=#700000>* " + notificationMsg +"</font></i>"));
-		if(type.equalsIgnoreCase("parted"))
+		else if(type.equalsIgnoreCase("parted"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=#700000>* " + notificationMsg +"</font></i>"));
-		if(type.equalsIgnoreCase("nickchange"))
+		else if(type.equalsIgnoreCase("nickchange"))
 			mChatContents.append(Html.fromHtml("<br><i><font color=#0066CC>* " + notificationMsg +"</font></i>"));
+		else
+			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
 		scrollToBottom();
 	}
 }
