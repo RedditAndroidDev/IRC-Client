@@ -104,7 +104,7 @@ public class ChannelFragment extends Fragment {
 		} catch (IOException e) {
 			showError("Unknown IOException");
 		} catch (IrcException e) {
-			showError("e.printStackTrace()");
+			showError("IRC Exception");
 		}
         ircClient.joinChannel(channel);
         scrollToBottom();
@@ -120,7 +120,7 @@ public class ChannelFragment extends Fragment {
 				 }
 				 else if (msg.obj instanceof NotificationMessage) {
 					 NotificationMessage notificationMessage = (NotificationMessage)msg.obj;
-					 showNotification(notificationMessage.notificationMsg);
+					 showNotification(notificationMessage.notificationMsg, notificationMessage.type);
 				 }
 			 }
 		};
@@ -132,7 +132,7 @@ public class ChannelFragment extends Fragment {
 	}
  
     private void scrollToBottom() {
-    	scroller.smoothScrollTo(1, mChatContents.getBottom());
+    	scroller.smoothScrollTo(0, mChatContents.getBottom());
     }
     private void sendMessage(CharSequence msg) {
     	Calendar currentDate = Calendar.getInstance();
@@ -153,8 +153,19 @@ public class ChannelFragment extends Fragment {
 		mChatContents.append(Html.fromHtml("<br><i><font color=red>ERROR: " + errorMsg +"</font></i>"));
 		scrollToBottom();
 	}
-	private void showNotification(String notificationMsg) {
-		mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
+	private void showNotification(String notificationMsg, String type) {
+		if(type.equalsIgnoreCase("join"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
+		if(type.equalsIgnoreCase("connect"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
+		if(type.equalsIgnoreCase("disconnect"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=red>* " + notificationMsg +"</font></i>"));
+		if(type.equalsIgnoreCase("quit"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=#700000>* " + notificationMsg +"</font></i>"));
+		if(type.equalsIgnoreCase("parted"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=#700000>* " + notificationMsg +"</font></i>"));
+		if(type.equalsIgnoreCase("nickchange"))
+			mChatContents.append(Html.fromHtml("<br><i><font color=#0066CC>* " + notificationMsg +"</font></i>"));
 		scrollToBottom();
 	}
 }

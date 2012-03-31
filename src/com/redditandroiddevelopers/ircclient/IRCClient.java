@@ -31,7 +31,7 @@ public class IRCClient extends PircBot {
 	protected void onConnect() {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage("Connected to " + this.getServer());
+		NotificationMessage notificationMessage = new NotificationMessage("Connected to " + this.getServer(), "connect");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
@@ -40,7 +40,7 @@ public class IRCClient extends PircBot {
 	protected void onDisconnect() {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage("Disconnected from " + this.getServer());
+		NotificationMessage notificationMessage = new NotificationMessage("Disconnected from " + this.getServer(), "disconnect");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
@@ -50,7 +50,7 @@ public class IRCClient extends PircBot {
 			String hostname) {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage(sender + " joined " + channel);
+		NotificationMessage notificationMessage = new NotificationMessage(sender + " joined " + channel, "join");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
@@ -60,7 +60,7 @@ public class IRCClient extends PircBot {
 			String hostname) {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage(sender + " left " + channel);
+		NotificationMessage notificationMessage = new NotificationMessage(sender + " left " + channel, "parted");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
@@ -70,7 +70,7 @@ public class IRCClient extends PircBot {
 			String newNick) {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage(oldNick + " is now known as " + newNick);
+		NotificationMessage notificationMessage = new NotificationMessage(oldNick + " is now known as " + newNick, "nickchange");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
@@ -80,7 +80,7 @@ public class IRCClient extends PircBot {
 			String sourceHostname, String reason) {
 		Message msg;
 		msg = mHandler.obtainMessage();
-		NotificationMessage notificationMessage = new NotificationMessage(sourceNick + " Quit (" + reason + ")");
+		NotificationMessage notificationMessage = new NotificationMessage(sourceNick + " Quit (" + reason + ")", "quit");
 		msg.obj = notificationMessage;
 		mHandler.sendMessage(msg);
 	}
