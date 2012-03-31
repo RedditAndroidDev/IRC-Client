@@ -17,17 +17,37 @@
 */
 package com.redditandroiddevelopers.ircclient;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class ChannelFragment extends Fragment {
 
-    private TextView mChatContents;
+	private TextView mChatContents;
+    private EditText mChatInput;
+    private IRCClient ircClient;
+    private ScrollView scroller;
+    private String channel;
+    private String nick;
+    private Handler handler;
     
     public ChannelFragment() { }
 
@@ -35,30 +55,103 @@ public class ChannelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View base = inflater.inflate(R.layout.chat_fragment, container, false);
-        
         mChatContents = (TextView) base.findViewById(R.id.chat);
-        // TODO: Placeholder
-        mChatContents.setText(Html.fromHtml("(10:32:50) <font color=red>@member68</font>: that's because they don't have a local copy for redmine. I don't really see why we should keep the repository tab anyway since we have github for browsing the code" +
-                "<br>(10:33:04) <font color=red>@veeti</font>: it's so that issues can be closed by commits automatically" +
-                "<br>(10:33:09) <font color=red>Hogofwar</font>: make make a link in the project to the github" +
-                "<br>(10:33:14) <font color=red>Hogofwar</font>: and that" +
-                "<br>(10:33:53) <font color=red>@member68</font>: can redmine do that? haven't tried it" +
-                "<br>(10:34:37) <font color=red>@member68</font>: how does it detect which commit belongs wo which issue?" +
-                "<br>(10:34:48) <font color=red>@veeti</font>: you put something like" +
-                "<br>(10:34:53) <font color=red>@veeti</font>: \"fixes #23142345\" in the commit message" +
-                "<br>(10:34:57) <font color=red>@veeti</font>: and it closes the issue automatically" +
-                "<br>(10:35:12) <font color=red>@member68</font>: that's useful." +
-                "<br>(10:35:33) <font color=red>@member68</font>: guess that's a good reason to add the repos to redmine" +
-                "<br>(10:35:58) <font color=red>Hogofwar</font>: woo" +
-                "<br>(10:36:11) <font color=red>@member68</font>: wjoe would be the one to add them though. he's the only one who can do that" +
-                "<br>(10:40:46) <font color=red>Hiver</font>: So, what's the difference between an idea and a suggestion?" +
-                "<br>(10:41:37) <font color=red>@member68</font>: I removed Ideas as an issue tracker a few minutes ago because hogofwar pointed out here wasn't one" +
-                "<br>(10:44:08) <font color=red>Hiver</font>: Ahh"));
-        mChatContents.append(Html.fromHtml("<br>(10:44:08) <font color=red>Raionic</font>: Hi"));
-        
+        mChatInput = (EditText) base.findViewById(R.id.edit);
+        scroller = (ScrollView) base.findViewById(R.id.scroller);
+        nick = "TestingIRCApp";
+        channel = "##RAD-IRC";
+		
+		configureMessageHandler();
+		
+		ircClient = new IRCClient(nick,handler);
+		mChatInput.setOnKeyListener(new OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+					String inputText = mChatInput.getText().toString();
+					if (inputText.equals("/disconnect") || inputText == "/disconnect") {
+						ircClient.quitServer("I work when i want. You're not the boss of me.");
+					} else if (inputText.matches("^/nick .*")) {
+						nick=ircClient.getNick();
+						String [] args = inputText.split(" ");
+						ircClient.changeNick(args[1]);
+						if (nick.equals(ircClient.getNick())) {
+							showError("Nick already in use.");
+						}
+						nick=ircClient.getNick();
+					} else {
+						if (inputText == "" || (inputText.equals("")) || inputText == null) {
+							showError("Invalid input");
+						} else {
+							sendMessage(inputText);
+						}
+					}
+					mChatInput.setText("");
+					return true;
+				}
+				return false;
+			}
+		});
+		
+        try {
+			connect("irc.freenode.net");
+		} catch (NickAlreadyInUseException e) {
+			showError("Nick is already in use");
+		} catch (IOException e) {
+			showError("Unknown IOException");
+		} catch (IrcException e) {
+			showError("e.printStackTrace()");
+		}
+        ircClient.joinChannel(channel);
+        scrollToBottom();
         return base;
     }
+
+	private void configureMessageHandler() {
+		handler = new Handler() {
+			 public void handleMessage(Message msg) {
+				 if (msg.obj instanceof ChatMessage) {
+					ChatMessage chatMessage = (ChatMessage)msg.obj;
+					getNewMessage(chatMessage.channel,chatMessage.sender,chatMessage.login,chatMessage.hostname,chatMessage.message);
+				 }
+				 else if (msg.obj instanceof NotificationMessage) {
+					 NotificationMessage notificationMessage = (NotificationMessage)msg.obj;
+					 showNotification(notificationMessage.notificationMsg);
+				 }
+			 }
+		};
+	}
+
+	private void connect(String server) throws NickAlreadyInUseException, IOException, IrcException {
+        ircClient.setVerbose(true);
+		ircClient.connect(server);
+	}
  
-    
-    
+    private void scrollToBottom() {
+    	scroller.smoothScrollTo(1, mChatContents.getBottom());
+    }
+    private void sendMessage(CharSequence msg) {
+    	Calendar currentDate = Calendar.getInstance();
+    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+    	ircClient.sendMessage(channel, msg.toString());
+		mChatContents.append(Html.fromHtml("<br>("+ formatter.format(currentDate.getTime()) +") <font color=red><b>"+ircClient.getNick()+"</b></font>: " + msg));
+		scrollToBottom();
+    }
+    private void getNewMessage(String channel, String sender, String login,
+			String hostname, String message) {
+    	Calendar currentDate = Calendar.getInstance();
+    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+    	mChatContents.append(Html.fromHtml("<br>(" + formatter.format(currentDate.getTime()) + ") <font color=red>" + sender + "</font>: " + message));
+		scrollToBottom();
+    }
+
+	private void showError(String errorMsg) {
+		mChatContents.append(Html.fromHtml("<br><i><font color=red>ERROR: " + errorMsg +"</font></i>"));
+		scrollToBottom();
+	}
+	private void showNotification(String notificationMsg) {
+		mChatContents.append(Html.fromHtml("<br><i><font color=green>* " + notificationMsg +"</font></i>"));
+		scrollToBottom();
+	}
 }

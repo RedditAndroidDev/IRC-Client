@@ -7,7 +7,8 @@
     android:background="#fff">
 
         
-    <ScrollView android:layout_width="match_parent"
+    <ScrollView android:id="@+id/scroller"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
         android:background="@drawable/rad_logo" >
