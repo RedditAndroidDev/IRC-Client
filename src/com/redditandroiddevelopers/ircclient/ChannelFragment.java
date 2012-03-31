@@ -24,6 +24,9 @@ import java.util.Calendar;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
+import com.redditandroiddevelopers.ircclient.messages.ChatMessage;
+import com.redditandroiddevelopers.ircclient.messages.NotificationMessage;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;

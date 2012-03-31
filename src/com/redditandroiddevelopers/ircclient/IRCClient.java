@@ -1,6 +1,9 @@
 package com.redditandroiddevelopers.ircclient;
 import org.jibble.pircbot.*;
 
+import com.redditandroiddevelopers.ircclient.messages.ChatMessage;
+import com.redditandroiddevelopers.ircclient.messages.NotificationMessage;
+
 import android.os.Handler;
 import android.os.Message;
 

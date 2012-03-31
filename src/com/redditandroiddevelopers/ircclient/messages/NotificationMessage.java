@@ -1,4 +1,4 @@
-package com.redditandroiddevelopers.ircclient;
+package com.redditandroiddevelopers.ircclient.messages;
 
 public class NotificationMessage {
 	public String notificationMsg;

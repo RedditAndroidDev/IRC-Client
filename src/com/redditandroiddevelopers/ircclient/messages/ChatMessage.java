@@ -1,4 +1,4 @@
-package com.redditandroiddevelopers.ircclient;
+package com.redditandroiddevelopers.ircclient.messages;
 
 public class ChatMessage {
 	public String channel;
