@@ -35,7 +35,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class ChannelActivity extends SherlockFragmentActivity {
-
+	private static ChannelFragment mFragment;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +54,6 @@ public class ChannelActivity extends SherlockFragmentActivity {
     }  
     
     public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
-
-        private ChannelFragment mFragment;
-        
         @Override
         public void onTabSelected(Tab tab, FragmentTransaction ft) {
             if (mFragment == null) {

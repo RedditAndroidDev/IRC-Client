@@ -50,8 +50,10 @@ public class ChannelFragment extends Fragment {
     private String nick;
     private Handler handler;
     
+    private Thread thread;
+    
     public ChannelFragment() { }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -59,16 +61,27 @@ public class ChannelFragment extends Fragment {
         mChatContents = (TextView) base.findViewById(R.id.chat);
         mChatInput = (EditText) base.findViewById(R.id.edit);
         scroller = (ScrollView) base.findViewById(R.id.scroller);
-        nick = "TestingIRCApp";
-        channel = "##RAD-IRC";
-		
+        
 		configureMessageHandler();
 		
-		ircClient = new IRCClient(nick,handler);
-		mChatInput.setOnKeyListener(new OnKeyListener() {
-			
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
+    	nick = "TestingIRCApp";
+        channel = "##RAD-IRC";
+        
+    	if(ircClient==null) {
+			ircClient = new IRCClient(nick,handler);
+		}
+		
+		if(!ircClient.isConnected()) {
+			connect();
+		}
+		
+		return base;
+    }
+    
+    private void connect() {
+    	mChatInput.setOnKeyListener(new OnKeyListener() {
+    		@Override
+	    	public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
 					String inputText = mChatInput.getText().toString();
 					if (inputText.equals("/disconnect") || inputText == "/disconnect") {
@@ -98,27 +111,29 @@ public class ChannelFragment extends Fragment {
 		});
 		
 		showNotification("Connecting to server...", "connect");
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-		        try {
-					connect("irc.freenode.net");
-				} catch (NickAlreadyInUseException e) {
-					showError("Nick is already in use");
-				} catch (IOException e) {
-					showError("Unknown IOException");
-				} catch (IrcException e) {
-					showError("IRC Exception");
-				} catch (Exception e) {
-					showError(e.toString());
+		
+		if(thread == null) {
+			thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+			        try {
+						connect("irc.freenode.net");
+					} catch (NickAlreadyInUseException e) {
+						showError("Nick is already in use");
+					} catch (IOException e) {
+						showError("Unknown IOException");
+					} catch (IrcException e) {
+						showError("IRC Exception");
+					} catch (Exception e) {
+						showError(e.toString());
+					}
+					ircClient.joinChannel(channel);
 				}
-				ircClient.joinChannel(channel);
-			}
-		}).start();
-
-        scrollToBottom();
-        
-        return base;
+			});
+			thread.start();
+		}
+		scrollToBottom();
+		
     }
 
 	private void configureMessageHandler() {
