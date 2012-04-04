@@ -17,26 +17,29 @@
 */
 package com.redditandroiddevelopers.ircclient;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+
 public class IRCClientActivity extends SherlockListActivity implements OnItemClickListener {
     /** Called when the activity is first created. */
+
+	// just some variables so we can easily tell which itemID belongs to which subMenuItem 
+	private static final int BASICGROUP = 0;
+	private static final int mnuITEM_ADD_SERVER = Menu.FIRST;
+	private static final int mnuITEM_SETTINGS = mnuITEM_ADD_SERVER + 1;
+	private static final int mnuITEM_ABOUT = mnuITEM_SETTINGS + 1;
+	
 	TextView chatText;
 	MainListAdapter mainListAdapter;
 	static String[] serverList = new String[]{
@@ -69,4 +72,48 @@ public class IRCClientActivity extends SherlockListActivity implements OnItemCli
 		startActivity(new Intent().setClass(IRCClientActivity.this, ChannelActivity.class));
 		//Toast.makeText(getApplicationContext(), ((TextView) arg1).getText(), Toast.LENGTH_LONG).show(); 
 	}
+	
+	@Override 
+	public boolean onCreateOptionsMenu(Menu menu) { 
+	    // prepare a menu on the ActionBar
+		 
+		
+		
+		//add the submenu items, and set itemID
+		SubMenu RADsubmenu = menu.addSubMenu("").setIcon(R.drawable.ic_menu_moreoverflow_normal_holo_light);
+		
+		 RADsubmenu.add(BASICGROUP, mnuITEM_ADD_SERVER, 1,"Add Server").setIcon(R.drawable.radlogo);
+		 RADsubmenu.add(BASICGROUP, mnuITEM_SETTINGS, 2,"Settings").setIcon(R.drawable.logo2);
+		 RADsubmenu.add(BASICGROUP, mnuITEM_ABOUT, 3,"About").setIcon(R.drawable.rad_logo);
+		
+	        MenuItem RADsubmenuItem = RADsubmenu.getItem();
+	        RADsubmenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+
+	        return super.onCreateOptionsMenu(menu);
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle menuItem events
+	    switch (item.getItemId()) {
+	        case 1:
+	        	// Add Server was clicked
+	           Toast.makeText(this, "Add Server", Toast.LENGTH_SHORT).show();
+	        	return true;
+	        case 2:
+	        	// Settings was clicked
+		           Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+		        	return true;
+	        case 3:
+	        	// About was clicked
+		           Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+		        	return true;
+	      
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	   
 }

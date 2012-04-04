@@ -21,6 +21,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,9 +36,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChannelActivity extends SherlockFragmentActivity {
 	private static ChannelFragment mFragment;
+	
+	// variables so we can easily tell which itemID belongs to which subMenuItem 
+			// just some actions I think are most important
+		private static final int BASICGROUP = 0;
+		private static final int mnuITEM_DISCONNECT = Menu.FIRST;
+		private static final int mnuITEM_SERVER_DETAILS = mnuITEM_DISCONNECT + 1;
+		private static final int mnuITEM_USERS = mnuITEM_SERVER_DETAILS + 1;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,4 +88,49 @@ public class ChannelActivity extends SherlockFragmentActivity {
         
     }
     
+    @Override 
+	public boolean onCreateOptionsMenu(Menu menu) { 
+	    // prepare a menu on the ActionBar
+		 
+		
+		
+		//add the submenu items, and set itemID
+		SubMenu RADsubmenu = menu.addSubMenu("").setIcon(R.drawable.ic_menu_moreoverflow_normal_holo_light);
+		
+		 RADsubmenu.add(BASICGROUP, mnuITEM_DISCONNECT, 1,"Disconnet").setIcon(R.drawable.radlogo);
+		 RADsubmenu.add(BASICGROUP, mnuITEM_SERVER_DETAILS, 2,"Server Details").setIcon(R.drawable.logo2);
+		 RADsubmenu.add(BASICGROUP, mnuITEM_USERS, 3,"Users").setIcon(R.drawable.rad_logo);
+		
+		
+	        MenuItem RADsubmenuItem = RADsubmenu.getItem();
+	        RADsubmenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+
+	        return super.onCreateOptionsMenu(menu);
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle menuItem events
+	    switch (item.getItemId()) {
+	        case 1:
+	        	// Disconnect was clicked
+	           Toast.makeText(this, "Disconnect", Toast.LENGTH_SHORT).show();
+	        	return true;
+	        case 2:
+	        	// Server Details was clicked
+		           Toast.makeText(this, "Server Details", Toast.LENGTH_SHORT).show();
+		        	return true;
+	        case 3:
+	        	// Users was clicked
+		           Toast.makeText(this, "Users", Toast.LENGTH_SHORT).show();
+		        	return true;
+	      
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+    
+	
 }
