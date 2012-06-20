@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+		<PreferenceCategory
+			android:title="User Preferences"
+			android:key="user_prefs">
+			<EditTextPreference
+				android:key="display_name_pref"
+				android:summary="Display Name on IRC"
+				android:title="Display Name"
+				android:defaultValue="Display Name" />
+				<EditTextPreference
+					android:key="user_name_pref"
+					android:title="User Name"
+					android:defaultValue="Username" />
+			<EditTextPreference
+				android:key="user_pass_pref"
+				android:title="User Password"
+				android:defaultValue="password" 
+				android:inputType="textPassword" />
+		</PreferenceCategory>
+	</PreferenceScreen>

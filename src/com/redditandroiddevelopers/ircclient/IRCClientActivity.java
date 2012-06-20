@@ -104,6 +104,8 @@ public class IRCClientActivity extends SherlockListActivity implements OnItemCli
 	        	return true;
 	        case 2:
 	        	// Settings was clicked
+				Intent settingsIntent = new Intent(IRCClientActivity.this, Preferences.class);
+				startActivity(settingsIntent);
 		           Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
 		        	return true;
 	        case 3:

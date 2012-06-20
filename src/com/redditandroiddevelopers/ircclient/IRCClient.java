@@ -25,6 +25,11 @@ public class IRCClient extends PircBot {
 		msg.obj = chatMessage;
 		mHandler.sendMessage(msg);
 	}
+	
+	public void setLoginPublic(String userName)
+	{
+		super.setLogin(userName);
+	}
 
 	@Override
 	protected void onConnect() {

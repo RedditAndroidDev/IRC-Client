@@ -49,10 +49,19 @@ public class ChannelFragment extends Fragment {
     private String channel;
     private String nick;
     private Handler handler;
-    
+    private String serverStr;
     private Thread thread;
+	private String userName;
+	private String userPass;
     
-    public ChannelFragment() { }
+    public ChannelFragment(IRCClient ircClient, String serverStr, String userNick, String userName, String userPass, String channel) {
+	this.ircClient = ircClient;	
+	this.serverStr = serverStr;
+	this.nick = userNick;
+	this.channel = channel;
+	this.userName = userName;
+	this.userPass = userPass;
+	}
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,52 +72,63 @@ public class ChannelFragment extends Fragment {
         scroller = (ScrollView) base.findViewById(R.id.scroller);
         
 		configureMessageHandler();
-		
-    	nick = "TestingIRCApp";
-        channel = "##RAD-IRC";
         
     	if(ircClient==null) {
 			ircClient = new IRCClient(nick,handler);
 		}
 		
 		if(!ircClient.isConnected()) {
+			ircClient.setLoginPublic(userName);
 			connect();
+			ircClient.identify(userPass);
 		}
+		
+		mChatInput.setOnKeyListener(new OnKeyListener() {
+    		@Override
+	    	public boolean onKey(View v, int keyCode, KeyEvent event) {
+   				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+	   				String inputText = mChatInput.getText().toString();
+	   				if (inputText.equals("/disconnect") || inputText == "/disconnect") {
+		   			ircClient.quitServer("I work when i want. You're not the boss of me.");
+	   			} 
+	   			else if (inputText.matches("^/nick .*")) {
+		   			nick=ircClient.getNick();
+		   			String [] args = inputText.split(" ");
+		   			String newNick = args[1];
+		   			ircClient.changeNick(newNick);
+		   			boolean changeNickSuccessful = !(nick.equals(newNick)); // TODO: Not functioning properly
+		   			if (!changeNickSuccessful) {
+			   			showError(newNick +" already in use.");
+		   			}
+		   			nick=ircClient.getNick();
+	   			}
+	   			else if (inputText.matches("^/join .*")) {
+		   			String[] args = inputText.split(" ");
+		   			String newChannel = args[1];
+		   			ircClient.joinChannel(newChannel);
+		   			channel = newChannel;
+	   			} 
+	   			else {
+		   			if (inputText == "" || (inputText.equals("")) || inputText == null) {
+			   			showError("Invalid input");
+		   			} 
+		   			else {
+			   			sendMessage(inputText);
+		   			}
+	   			}
+				
+	   			mChatInput.setText("");
+	   			return true;
+   	   		}
+   			return false;
+		}});
+		
+		
 		
 		return base;
     }
     
     private void connect() {
-    	mChatInput.setOnKeyListener(new OnKeyListener() {
-    		@Override
-	    	public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-					String inputText = mChatInput.getText().toString();
-					if (inputText.equals("/disconnect") || inputText == "/disconnect") {
-						ircClient.quitServer("I work when i want. You're not the boss of me.");
-					} else if (inputText.matches("^/nick .*")) {
-						nick=ircClient.getNick();
-						String [] args = inputText.split(" ");
-						String newNick = args[1];
-						ircClient.changeNick(newNick);
-						boolean changeNickSuccessful = !(nick.equals(newNick)); // TODO: Not functioning properly
-						if (!changeNickSuccessful) {
-							showError(newNick +" already in use.");
-						}
-						nick=ircClient.getNick();
-					} else {
-						if (inputText == "" || (inputText.equals("")) || inputText == null) {
-							showError("Invalid input");
-						} else {
-							sendMessage(inputText);
-						}
-					}
-					mChatInput.setText("");
-					return true;
-				}
-				return false;
-			}
-		});
 		
 		showNotification("Connecting to server...", "connect");
 		
@@ -117,7 +137,7 @@ public class ChannelFragment extends Fragment {
 				@Override
 				public void run() {
 			        try {
-						connect("irc.freenode.net");
+						connect(serverStr);
 					} catch (NickAlreadyInUseException e) {
 						showError("Nick is already in use");
 					} catch (IOException e) {

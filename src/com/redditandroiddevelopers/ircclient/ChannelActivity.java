@@ -37,8 +37,11 @@ import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v4.content.pm.*;
+import android.preference.*;
+import android.content.SharedPreferences;
 
-public class ChannelActivity extends SherlockFragmentActivity {
+public class ChannelActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private static ChannelFragment mFragment;
 	
 	// variables so we can easily tell which itemID belongs to which subMenuItem 
@@ -47,11 +50,22 @@ public class ChannelActivity extends SherlockFragmentActivity {
 		private static final int mnuITEM_DISCONNECT = Menu.FIRST;
 		private static final int mnuITEM_SERVER_DETAILS = mnuITEM_DISCONNECT + 1;
 		private static final int mnuITEM_USERS = mnuITEM_SERVER_DETAILS + 1;
+		private IRCClient ircClient;
+		private String server;
+		private String userName;
+		private String userPass;
+		private String userNick;
+		
+		public ChannelActivity()  { }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		this.server = "irc.freenode.net";
+		this.userName = settings.getString("user_name_pref", "username");
+		this.userPass = settings.getString("user_pass_pref", "");
+		this.userNick = settings.getString("display_name_pref", "IRCTestApp");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
@@ -59,16 +73,16 @@ public class ChannelActivity extends SherlockFragmentActivity {
         for (int i = 0; i < 5; i++) {
             Tab tab = actionBar.newTab()
                     .setText(placeholder_names[i])
-                    .setTabListener(new TabListener<ChannelFragment>());
+                    .setTabListener(this);
             actionBar.addTab(tab);
         }
     }  
     
-    public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
+   // public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
         @Override
         public void onTabSelected(Tab tab, FragmentTransaction ft) {
             if (mFragment == null) {
-                mFragment = new ChannelFragment();
+                mFragment = new ChannelFragment(ircClient, server, userNick, userName, userPass, tab.getText().toString());
                 ft.add(android.R.id.content, mFragment, "channel");
             } else {
                 ft.attach(mFragment);
@@ -84,9 +98,13 @@ public class ChannelActivity extends SherlockFragmentActivity {
 
         @Override
         public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			if (mFragment != null)
+			{
+				ft.attach(mFragment);
+			}
         }
         
-    }
+  //  }
     
     @Override 
 	public boolean onCreateOptionsMenu(Menu menu) { 
